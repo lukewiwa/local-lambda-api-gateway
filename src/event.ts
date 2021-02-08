@@ -3,7 +3,7 @@ import { Request } from "express";
 import { URL } from "url";
 
 export const createAPIGatewayEvent = (req: Request): APIGatewayProxyEventV2 => {
-  const { path, method, url, ip, headers, cookies } = req;
+  const { path, method, url, ip, headers, cookies, body } = req;
   const {
     accept,
     "accept-encoding": acceptEncoding,
@@ -69,6 +69,7 @@ export const createAPIGatewayEvent = (req: Request): APIGatewayProxyEventV2 => {
       time,
       timeEpoch,
     },
+    body,
     isBase64Encoded: false,
   };
 };
