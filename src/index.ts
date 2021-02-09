@@ -1,6 +1,6 @@
 import * as express from "express";
 import axios from "axios";
-import { createAPIGatewayEvent } from "./event";
+import { createAPIGatewayEvent, createAPIGatewayResponse } from "./event";
 
 const app = express();
 app.use(express.json());
@@ -14,9 +14,12 @@ app.all("/*", async (req, res, next) => {
   const event = createAPIGatewayEvent(req);
   res.type("application/json");
   try {
-    const result = await axios.post(lambdaUrl, event, { timeout: 5000 });
-    const data = JSON.parse(result.data.body);
-    res.json(data);
+    const result = await axios.post(lambdaUrl, JSON.stringify(event), {
+      timeout: 5000,
+    });
+    console.log(result);
+    const response = createAPIGatewayResponse(result);
+    res.json(response);
   } catch (e) {
     console.log(e);
     return next(e);

@@ -1,26 +1,15 @@
-import { APIGatewayProxyEventV2 } from "aws-lambda";
+import {
+  APIGatewayProxyEventV2,
+  APIGatewayProxyResultV2,
+  APIGatewayProxyEventHeaders,
+} from "aws-lambda";
+import { AxiosResponse } from "axios";
 import { Request } from "express";
 import { URL } from "url";
 
 export const createAPIGatewayEvent = (req: Request): APIGatewayProxyEventV2 => {
   const { path, method, url, ip, headers, cookies, body } = req;
-  const {
-    accept,
-    "accept-encoding": acceptEncoding,
-    "accept-language": acceptLanguage,
-    "content-length": contentLength,
-    host,
-    "sec-fetch-dest": secFetchDest,
-    "sec-fetch-mode": secFetchMode,
-    "sec-fetch-site": secFetchSite,
-    "sec-fetch-user": secFetchUser,
-    "upgrade-insecure-requests": upgradeInsecureRequests,
-    "user-agent": userAgentTmp,
-    "x-amzn-trace": xAmznTrace,
-    "x-forwarded-for": xForwardedFor,
-    "x-forwarded-port": xForwaredPort,
-    "x-forwarded-proto": xForwaredProto,
-  } = headers;
+  const { "user-agent": userAgentTmp } = headers;
   const userAgent = userAgentTmp ?? "";
   const rawQueryString = new URL(url, "http://example.com").search;
   const currentDate = new Date(Date.now());
@@ -33,23 +22,7 @@ export const createAPIGatewayEvent = (req: Request): APIGatewayProxyEventV2 => {
     rawPath: path,
     rawQueryString,
     cookies,
-    headers: {
-      accept,
-      "accept-encoding": acceptEncoding as string,
-      "accept-language": acceptLanguage,
-      "content-length": contentLength,
-      host,
-      "sec-fetch-dest": secFetchDest as string,
-      "sec-fetch-mode": secFetchMode as string,
-      "sec-fetch-site": secFetchSite as string,
-      "sec-fetch-user": secFetchUser as string,
-      "upgrade-insecure-requests": upgradeInsecureRequests as string,
-      "user-agent": userAgent,
-      "x-amzn-trace": xAmznTrace as string,
-      "x-forwarded-for": xForwardedFor as string,
-      "x-forwarded-port": xForwaredPort as string,
-      "x-forwarded-proto": xForwaredProto as string,
-    },
+    headers: headers as APIGatewayProxyEventHeaders,
     requestContext: {
       accountId: "123456789012",
       apiId: "",
@@ -69,7 +42,33 @@ export const createAPIGatewayEvent = (req: Request): APIGatewayProxyEventV2 => {
       time,
       timeEpoch,
     },
-    body,
+    body: JSON.stringify(body),
     isBase64Encoded: false,
+  };
+};
+
+export const createAPIGatewayResponse = (
+  result: AxiosResponse
+): APIGatewayProxyResultV2 => {
+  const transformBody = (body: string | unknown): string => {
+    if (typeof body === "string") {
+      return body;
+    } else {
+      return JSON.stringify(body);
+    }
+  };
+
+  const {
+    statusCode = 200,
+    isBase64Encoded = false,
+    body,
+    headers,
+  } = result.data;
+
+  return {
+    statusCode,
+    isBase64Encoded,
+    headers,
+    body: transformBody(body),
   };
 };
