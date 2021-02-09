@@ -4,8 +4,8 @@
   "description": "A bridge api gateway between a local client and local AWS lambda containers",
   "main": "index.js",
   "scripts": {
-    "build": "tsc src/*.ts",
-    "dev": "tsc --watch src/*.ts",
+    "build": "tsc src/index.ts",
+    "dev": "tsc --watch src/index.ts",
     "serve": "node ./src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

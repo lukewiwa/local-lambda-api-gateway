@@ -3,6 +3,8 @@ import axios from "axios";
 import { createAPIGatewayEvent } from "./event";
 
 const app = express();
+app.use(express.json());
+
 const port = 9745;
 const lambdaHost = process.env.LAMBDA_HOST ?? "localhost";
 const lambdaPort = process.env.LAMBDA_PORT ?? 8080;
@@ -14,7 +16,7 @@ app.all("/*", async (req, res, next) => {
   try {
     const result = await axios.post(lambdaUrl, event, { timeout: 5000 });
     const data = JSON.parse(result.data.body);
-    res.send(data);
+    res.json(data);
   } catch (e) {
     console.log(e);
     return next(e);
@@ -22,5 +24,5 @@ app.all("/*", async (req, res, next) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`API Gateway listening on http://localhost:${port}`);
 });
