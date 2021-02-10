@@ -17,7 +17,6 @@ app.all("/*", async (req, res, next) => {
     const result = await axios.post(lambdaUrl, JSON.stringify(event), {
       timeout: 5000,
     });
-    console.log(result);
     const response = createAPIGatewayResponse(result);
     res.json(response);
   } catch (e) {
