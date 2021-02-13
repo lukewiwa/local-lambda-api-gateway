@@ -1,9 +1,11 @@
 import * as express from "express";
+import * as cors from "cors";
 import axios from "axios";
 import { createAPIGatewayEvent, createAPIGatewayResponse } from "./event";
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 const port = 9745;
 const lambdaHost = process.env.LAMBDA_HOST ?? "localhost";
