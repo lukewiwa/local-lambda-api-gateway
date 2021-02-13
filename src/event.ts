@@ -1,9 +1,7 @@
 import {
   APIGatewayProxyEventV2,
-  APIGatewayProxyResultV2,
   APIGatewayProxyEventHeaders,
 } from "aws-lambda";
-import { AxiosResponse } from "axios";
 import { Request } from "express";
 import { URL } from "url";
 
@@ -44,31 +42,5 @@ export const createAPIGatewayEvent = (req: Request): APIGatewayProxyEventV2 => {
     },
     body: JSON.stringify(body),
     isBase64Encoded: false,
-  };
-};
-
-export const createAPIGatewayResponse = (
-  result: AxiosResponse
-): APIGatewayProxyResultV2 => {
-  const transformBody = (body: string | unknown): string => {
-    if (typeof body === "string") {
-      return body;
-    } else {
-      return JSON.stringify(body);
-    }
-  };
-
-  const {
-    statusCode = 200,
-    isBase64Encoded = false,
-    body,
-    headers,
-  } = result.data;
-
-  return {
-    statusCode,
-    isBase64Encoded,
-    headers,
-    body: transformBody(body),
   };
 };

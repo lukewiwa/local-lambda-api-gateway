@@ -1,7 +1,7 @@
 import * as express from "express";
 import * as cors from "cors";
 import axios from "axios";
-import { createAPIGatewayEvent, createAPIGatewayResponse } from "./event";
+import { createAPIGatewayEvent } from "./event";
 
 const app = express();
 app.use(express.json());
@@ -14,13 +14,12 @@ const lambdaUrl = `http://${lambdaHost}:${lambdaPort}/2015-03-31/functions/funct
 
 app.all("/*", async (req, res, next) => {
   const event = createAPIGatewayEvent(req);
-  res.type("application/json");
   try {
     const result = await axios.post(lambdaUrl, JSON.stringify(event), {
       timeout: 5000,
     });
-    const response = createAPIGatewayResponse(result);
-    res.json(response);
+    const { statusCode = 200, body, headers } = result.data;
+    res.status(statusCode).header(headers).json(body);
   } catch (e) {
     console.log(e);
     return next(e);
