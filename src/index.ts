@@ -19,7 +19,11 @@ app.all("/*", async (req, res, next) => {
       timeout: 5000,
     });
     const { statusCode = 200, body, headers } = result.data;
-    res.status(statusCode).header(headers).json(body);
+    res
+      .status(statusCode)
+      .header(headers)
+      .type("text/plain; charset=utf-8")
+      .json(body);
   } catch (e) {
     console.log(e);
     return next(e);
