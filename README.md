@@ -1,6 +1,6 @@
 # Local Lambda API Gateway
 
-A docker image to pretend to be an AWS API Gateway fronting a lambda function. This is designed for local testing as a way to make local AWS lambda containers to output their invocation as if it was behind an API Gateway endpoint.
+A docker image to pretend to be an AWS API Gateway fronting a lambda function. This is designed for local testing as a way to make local AWS lambda containers to output their invocation as if it was behind an API Gateway endpoint. Specifically when there is no mapping involved and the gateway acts as a default proxy. This is currently only for V2 of the HTTP API reponse.
 
 ## Example
 
